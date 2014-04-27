@@ -123,10 +123,14 @@ public class Decision extends Composite {
         _selected = true;
         _rb.setValue(true);
         _votes++;
-        _decisionManager.itemWasSelected(_decisionTitle.getText());
+        _decisionManager.itemWasSelected(_decisionTitle.getText(), true);
         updateAspect();
       }
     }
+  }
+  
+  public void setSelected(){
+    _selected = true;
   }
   
   private class MouseOverVotesHandler implements MouseOverHandler{

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module>
+  <!--<inherits name="com.google.gwt.logging.Logging"/>-->
   <inherits name='cc.kune.gadget.KuneGadget'/>
   <inherits name='org.vaadin.gwtgraphics.GWTGraphics'/>
   <inherits name="com.google.gwt.i18n.I18N"/>

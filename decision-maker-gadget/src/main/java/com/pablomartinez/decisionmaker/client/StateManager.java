@@ -14,7 +14,7 @@ public class StateManager {
   public static final String FORMAT_VOTE_COUNTS = "votecount";
   public static final String FORMAT_TITLE = "title"; 
   public static final char SEPARATOR = '-';
-  
+
   private Wave _wave;
   private final DecisionManager _decisionManager;
   
@@ -87,6 +87,7 @@ public class StateManager {
   }
   
   public void updateDecisions(Map<String, Decision> decisions){
+    
     JsArrayString keys = _wave.getState().getKeys();
     String format = FORMAT_VOTE_COUNTS + SEPARATOR;
     for (int i = 0; i < keys.length(); i++) {
@@ -94,6 +95,7 @@ public class StateManager {
       if (key.length() > format.length()) {
         String decisionName =
             key.substring(format.length()).trim();
+        
         if (key.startsWith(format)) {
           if(decisions.containsKey(decisionName)){
             decisions.get(decisionName).setVoteCount(
@@ -101,6 +103,12 @@ public class StateManager {
           }
           else{
             _decisionManager.addNewDecision(decisionName, false);            
+          }
+          
+          List<String> participants = getVotersAsString(decisionName);
+          
+          if(participants.contains(_wave.getViewer().getId().toLowerCase())){
+            _decisionManager.itemWasSelected(decisionName, false);
           }
         }
       }
@@ -120,6 +128,23 @@ public class StateManager {
       for(String user : users){
         if(user.length() > 0){
           participants.add(_wave.getParticipantById(user));
+        }
+      }
+    }
+    
+    return participants;
+  }
+  
+  public List<String> getVotersAsString(String decision){
+    List<String> participants = new ArrayList<String>();
+    String format = FORMAT_VOTERS + SEPARATOR + decision.trim();
+    String value = _wave.getState().get(format);
+    
+    if(value != null){
+      String[] users = value.split(Character.toString(SEPARATOR));
+      for(String user : users){
+        if(user.length() > 0){
+          participants.add(user.toLowerCase());
         }
       }
     }

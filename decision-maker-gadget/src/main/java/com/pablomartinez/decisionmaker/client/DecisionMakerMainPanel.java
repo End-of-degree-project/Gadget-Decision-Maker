@@ -100,6 +100,17 @@ public class DecisionMakerMainPanel extends Composite
     _titlePanel = new HorizontalPanel();
     _titlePanel.setStyleName("Panel-margin");
     String title = _stateManager.getTitle();
+    
+    _addButton = new Button(messages.add_button());
+    
+    _addButton.setEnabled(false);
+    _addButton.addClickHandler(new ClickHandler() {
+      @Override
+      public void onClick(ClickEvent event) {
+        requestToAddDecision();
+      }
+    });
+    
     if(title != null){
       addPermanentTitle(title);
     }
@@ -118,17 +129,8 @@ public class DecisionMakerMainPanel extends Composite
     /*addNewDecision("Irse de camping", true);
     addNewDecision("Discoteca", true);
     addNewDecision("Salir a pasear al parque", true);*/
-    itemWasSelected(null);
+    itemWasSelected(null, true);
     
-    _addButton = new Button(messages.add_button());
-    
-    _addButton.setEnabled(false);
-    _addButton.addClickHandler(new ClickHandler() {
-      @Override
-      public void onClick(ClickEvent event) {
-        requestToAddDecision();
-      }
-    });
     _addBox = new TextBox();
     _addBox.addKeyPressHandler(new KeyPressHandler() {
       @Override
@@ -168,6 +170,7 @@ public class DecisionMakerMainPanel extends Composite
             updateSizes();
           }
         });
+        _eventBus.fireEvent(new StateUpdateEvent(wave));
       }
     });
   }
@@ -177,7 +180,9 @@ public class DecisionMakerMainPanel extends Composite
     _titleLabel = new Label(title);
     _titleLabel.setStyleName("Label-selected");
     _titlePanel.add(_titleLabel);
-    _addButton.setEnabled(true);
+    if(_addButton != null){
+      _addButton.setEnabled(true);
+    }
   }
   
   private void addEditableTitle(){
@@ -239,7 +244,7 @@ public class DecisionMakerMainPanel extends Composite
   }
 
   @Override
-  public void itemWasSelected(String itemName) {
+  public void itemWasSelected(String itemName, boolean addVote) {
     if (itemName != null){
       for (Entry<String, Decision> decision : _decisions.entrySet()){
         if(!itemName.equals(decision.getKey())){
@@ -249,8 +254,12 @@ public class DecisionMakerMainPanel extends Composite
           }
         }
       }
-      _stateManager.addVoteToDecision(
-          _decisions.get(itemName), _wave.getViewer().getId());
+      
+      _decisions.get(itemName).setSelected();
+      if(addVote){
+        _stateManager.addVoteToDecision(
+            _decisions.get(itemName), _wave.getViewer().getId());
+      }
     }
     for (Entry<String, Decision> decision : _decisions.entrySet()){
       decision.getValue().updateAspect();

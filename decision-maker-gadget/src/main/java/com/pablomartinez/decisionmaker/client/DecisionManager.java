@@ -5,7 +5,7 @@ public interface DecisionManager {
    * Triggered when one of the decisions is selected.
    * The name of the selected decision is the parameter.
    * */
-  public void itemWasSelected(String itemName);
+  public void itemWasSelected(String itemName, boolean addVote);
 
   /*
    * Used to create a new decision.
