@@ -311,6 +311,7 @@ public class DecisionMakerMainPanel extends Composite
     for (Entry<String, Decision> decision : _decisions.entrySet()){
       decision.getValue().setHeight(height);
     }
+    adjustHeight();
   }
   
   public int getMaxHeight(){
@@ -356,4 +357,8 @@ public class DecisionMakerMainPanel extends Composite
       _resetColorTimer.schedule(2000);
     }
   }
+  
+  private static native void adjustHeight() /*-{
+    $wnd.gadgets.window.adjustHeight();
+  }-*/;
 }
